@@ -29,6 +29,7 @@
 					  }
 					  
 //					  print_r($this->session->all_userdata());
+					  //<div class="col-12"><button type='button' class='btn btn-success download'>Unduh</button></div>					  
 					  ?>
 					  <input type='hidden' id='jenis' >
 					  <div class="col-12">

@@ -391,7 +391,13 @@
                                     <span class="hide-menu">Master Data</span>
                                 </a>
                                 <ul aria-expanded="false" class="collapse">
+									<?php
+									if($this->session->userdata('userlevel')==1){
+										?>
                             		<li><a href="<?= site_url('Master/main_cabang') ?>">Data Cabang</a></li>
+										<?php
+									}
+									?>							
                             		<li><a href="<?= site_url('Master/main_pengguna') ?>">Data Pengguna</a></li>
                             	</ul>								
                             </li>

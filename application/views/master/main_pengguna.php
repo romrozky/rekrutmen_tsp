@@ -89,7 +89,7 @@
 					});
 				});
 	$(document).on('click', '.detail', function () {
-		location.href = '<?= site_url() ?>/Master/detail_user/'  + $(this).attr('id');
+		location.href = '<?= site_url() ?>/Barang/detailuser/'  + $(this).attr('id');
 	});
 	$(document).on('click','.hapus',function(){
 		var cnf = confirm("Apakah anda yakin akan menonaktifkan user ini?");

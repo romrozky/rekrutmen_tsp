@@ -46,6 +46,8 @@ class Dashboard extends CI_Controller {
 	
 	function get_total_user(){
 		$where= array();
+		$where['user.id <>'] = 1;
+		
 		if($this->session->userdata('userlevel')>1){
 			$where['cabang'] = $this->session->userdata('cabang');			
 		}
@@ -55,6 +57,8 @@ class Dashboard extends CI_Controller {
 	
 	function get_total_user_aktif(){
 		$where['status'] = 1;
+		$where['user.id <>'] = 1;
+		
 		if($this->session->userdata('userlevel')>1){
 			$where['cabang'] = $this->session->userdata('cabang');			
 		}
@@ -65,6 +69,7 @@ class Dashboard extends CI_Controller {
 	function get_total_user_userlevel($userlevel='-'){
 		$where['userlevel'] = $userlevel;
 		$where['status'] = 1;
+		$where['user.id <>'] = 1;
 		if($this->session->userdata('userlevel')>1){
 			$where['cabang'] = $this->session->userdata('cabang');			
 		}

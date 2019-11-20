@@ -34,10 +34,13 @@ class Barang extends CI_Controller {
 				
 				$datahm = "
 				<button class='btn btn-info edit' id='".sha1($rows->id)."'>Edit</button>
-				<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail</button>
 				";
 				if($this->session->userdata('userlevel')==4){
 					$datahm = "-";
+				}
+				if($this->session->userdata('userlevel')==2){
+					$datahm = "<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail</button>
+				";
 				}
 				
 			$row[] = $no;
@@ -131,6 +134,11 @@ class Barang extends CI_Controller {
 					$datahm = "<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail</button>
 				";
 				}
+				if($this->session->userdata('userlevel')==2){
+					$datahm = "<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail</button>
+				";
+				}
+				
 //				if($this->session->userdata(''))
 			$row[] = $no;
 			$row[] = isset($rows->jenis_barang) ? $rows->jenis_barang : '-';
@@ -252,10 +260,13 @@ class Barang extends CI_Controller {
 				
 				$datahm = "
 				<button class='btn btn-info edit' id='".sha1($rows->id)."'>Edit</button>
-				<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail</button>
 				";
 				if($this->session->userdata('userlevel')==4){
 					$datahm = "-";
+				}
+				if($this->session->userdata('userlevel')==2){
+					$datahm = "<button class='btn btn-success detailreg' id='".sha1($rows->id)."'>Detail</button>
+				";
 				}
 			$row[] = $no;
 			$row[] = isset($rows->nama_barang) ? $rows->nama_barang : '-';
@@ -702,6 +713,70 @@ class Barang extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 	
+	function downloadstatus($kondisi='-',$jenisbarang='-',$iduser='-'){		
+		$this->db->select('barang.nama_barang, detail_barang.id, detail_barang.registered_number, detail_barang.id id_detail_barang, user.username, user.id id_user, kondisi.kondisi');
+		if($kondisi!='-'){
+			$this->db->where('detail_barang.kondisi',$kondisi);
+		}
+		if($jenisbarang!='-'){
+			$this->db->where('barang.id_jenis_barang',$jenisbarang);
+		}
+		if($iduser!='-'){
+			$this->db->where('detail_barang.owner',$iduser);
+		}
+		
+		$this->db->where('user.cabang',$this->session->userdata('cabang'));
+		$this->db->join('barang','barang.id = detail_barang.id_barang');
+		$this->db->join('master_jenis_barang','master_jenis_barang.id = barang.id_jenis_barang');
+		$this->db->join('user','user.id = detail_barang.owner','left');
+		$this->db->join('kondisi','kondisi.id = detail_barang.kondisi','left');
+		$this->db->from('detail_barang');
+		$a = $this->db->get();
+		$data['barang']	= $a->result();
+		$view = $this->load->view('barang/xls_barang',$data,true);
+		$namefile = "Data_Barang_".date('YmdHis').".xls";
+		header("Content-type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment;Filename=".$namefile);
+
+		echo $view;exit;
+		//print_r($a->result());
+	}
+	
+	function downloadhistory($iddetail='',$iduser='-'){	
+		$this->db->select('	barang.nama_barang,
+							log_detail_barang.id,
+							detail_barang.id id_detail_barang,
+							detail_barang.registered_number,
+							user.username,
+							user.id id_user,
+							log_detail_barang.tanggal tanggal,
+							kondisi.kondisi');	
+		if($iddetail!='-'){
+			$this->db->where('log_detail_barang.id_detail_barang',$iddetail);
+		}
+		if($this->session->userdata('userlevel')==4){
+			$this->db->where('log_detail_barang.owner',$this->session->userdata('id_user'));
+		}
+		if($iduser!='-'){
+			$this->db->where('log_detail_barang.owner',$iduser);			
+		}		
+		$this->db->join('detail_barang','detail_barang.id = log_detail_barang.id_detail_barang');
+		$this->db->join('barang','barang.id = detail_barang.id_barang');
+		$this->db->join('user','user.id = log_detail_barang.owner','left');
+		$this->db->join('kondisi','kondisi.id = log_detail_barang.kondisi','left');
+		$this->db->from('log_detail_barang');	
+		
+		$a = $this->db->get();
+		$data['barang']	= $a->result();
+		$view = $this->load->view('barang/history',$data,true);
+		echo $view;exit;
+		$namefile = "Data_Barang_".date('YmdHis').".xls";
+		header("Content-type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment;Filename=".$namefile);
+
+		echo $view;exit;
+		//print_r($a->result());
+	}
 	
 	
 }

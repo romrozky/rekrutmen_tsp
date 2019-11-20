@@ -28,6 +28,9 @@ class Master extends CI_Controller {
 	}
 	
 	function main_cabang(){
+		if($this->session->userdata('userlevel') != 1){
+			redirect();
+		}
 		$data['judul'] = "Pengaturan Data Cabang";
 		$this->load->view('layout/header', $data);
 		$this->load->view('master/main_cabang',$data);
@@ -132,14 +135,23 @@ class Master extends CI_Controller {
 				
 				$datahm = "
 				<button class='btn btn-info edit' id='".md5($rows->id)."'>Edit</button>
-				<button class='btn btn-success detail' id='".md5($rows->id)."'>Detail</button>
 				";
+				if($rows->userlevel=='User'){
+					$datahm = $datahm."<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail Inventory</button>
+				";					
+				}
 			if($rows->status==1){
 				$datahm = $datahm."<button class='btn btn-danger hapus' id='".md5($rows->id)."'>Non Aktifkan</button>";
 			}else{
 				$datahm = $datahm."<button class='btn btn-warning nyala' id='".md5($rows->id)."'>Aktifkan</button>";				
 			}
-				
+			if($this->session->userdata('userlevel')>1){
+				if($rows->userlevel=='User'){
+					$datahm = "<button class='btn btn-success detail' id='".sha1($rows->id)."'>Detail Inventory</button>";					
+				}else{
+					$datahm = "-";										
+				}
+			}	
 			$row[] = $no;
 			$row[] = isset($rows->username) ? $rows->username : '-';
 			$row[] = isset($rows->userlevel) ? $rows->userlevel : '-';							

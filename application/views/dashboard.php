@@ -69,6 +69,94 @@
             </div>
         </div>
 		
+		<div class="col-md-4">
+            <div class="card card-inverse text-center" style="background: #fcbe4a;">
+                <div class="card-header">
+                    <h3 class="m-b-0 text-white">Total Manajer </h3></div>
+                <div class="card-body">
+                    <p class="card-text angka-das">
+                    <h1 class="m-b-0 text-white">	
+						<?=$total_user_2?>
+					</h1>                    	                    	
+                    </p>					
+                </div>
+				 
+            </div>
+        </div>
+		<div class="col-md-4">
+            <div class="card card-inverse text-center" style="background: #fa5656;">
+                <div class="card-header">
+                    <h3 class="m-b-0 text-white">Total Admin </h3></div>
+                <div class="card-body">
+                    <p class="card-text angka-das">
+                    <h1 class="m-b-0 text-white">
+						<?=$total_user_3?>
+					</h1>                    	                    	
+                    </p>					
+                </div>
+				 
+            </div>
+        </div>
+		<div class="col-md-4">
+            <div class="card card-inverse text-center" style="background: #e81246;">
+                <div class="card-header">
+                    <h3 class="m-b-0 text-white">Total User </h3></div>
+                <div class="card-body">
+                    <p class="card-text angka-das">
+                    <h1 class="m-b-0 text-white">
+						<?=$total_user_4?>
+					</h1>                    	                    	
+                    </p>					
+                </div>
+				 
+            </div>
+        </div>
+		
+		<div class="col-md-12 downloadbarang" id='-' style='cursor: pointer;'>
+            <div class="card card-inverse text-center" style="background: #a84541;">
+                <div class="card-header">
+                    <h3 class="m-b-0 text-white">Total Barang </h3></div>
+                <div class="card-body">
+                    <p class="card-text angka-das">
+                    <h1 class="m-b-0 text-white">
+						<?=$total_barang?>
+					</h1>                    	                    	
+                    </p>					
+                </div>
+				 
+            </div>
+        </div>
+		<?php
+		$z = $this->Db_model->get('kondisi');
+		foreach($z->result() as $aa => $bb){
+			$where = array();
+			if($this->session->userdata('userlevel')>1){
+				$where['user.cabang'] = $this->session->userdata('cabang');			
+			}
+			$where['detail_barang.kondisi'] = $bb->id;						
+			$a = $this->Db_model->get('detail_barang','detail_barang.id',$where,'','','','',
+					[
+						['table' => 'user', 'on' => 'user.id = detail_barang.owner', 'pos' => 'left']
+					]				
+				);
+			?>
+		<div class="col-md-3 downloadbarang" id='<?=$bb->id?>' style='cursor: pointer;'>
+            <div class="card card-inverse text-center" style="background: #1d6ac0;">
+                <div class="card-header">
+                    <h4 class="m-b-0 text-white">Total Barang <?=$bb->kondisi?></h4></div>
+                <div class="card-body">
+                    <p class="card-text angka-das">
+                    <h1 class="m-b-0 text-white">
+						<?=$a->num_rows()?>
+					</h1>                    	                    	
+                    </p>					
+                </div>
+				 
+            </div>
+        </div>
+			<?php
+		}
+		?>
 		
 	</div>
 	
@@ -77,7 +165,9 @@
 
 
 <script type="text/javascript">
-  
+  $(document).on('click', '.downloadbarang', function () {
+		location.href = '<?= site_url() ?>/Barang/downloadstatus/'  + $(this).attr('id');
+	});
 $('#carouselExample').on('slide.bs.carousel', function (e) {
 
   

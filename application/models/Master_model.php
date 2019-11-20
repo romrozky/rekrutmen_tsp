@@ -92,7 +92,7 @@ class Master_model extends CI_Model {
 			$this->db->where('user.userlevel', $this->input->post('userlevel'));
 		}
 		if($this->session->userdata('userlevel')!=1){
-			$this->db->where('user.userlvel', $this->session->userdata('userlevel'));			
+			//$this->db->where('user.userlevel', $this->session->userdata('userlevel'));			
 			$this->db->where('user.cabang', $this->session->userdata('cabang'));			
 		}
 		
@@ -152,16 +152,17 @@ class Master_model extends CI_Model {
 		if(($this->input->post('cabang'))){
 			$this->db->where('user.cabang', $this->input->post('cabang'));
 		}
+		$this->db->where('user.id > 1', null);
 		if(($this->input->post('userlevel'))){
 			$this->db->where('user.userlevel', $this->input->post('userlevel'));
 		}
-		$this->db->where('user.id > 1', null);
 		if($this->session->userdata('userlevel')!=1){
-			$this->db->where('user.userlvel', $this->session->userdata('userlevel'));			
+			//$this->db->where('user.userlevel', $this->session->userdata('userlevel'));			
 			$this->db->where('user.cabang', $this->session->userdata('cabang'));			
 		}
+		
 		$this->db->join('userlevel','userlevel.id = user.userlevel');
-		$this->db->join('master_cabang','master_cabang.id = user.cabang','left');		
+		$this->db->join('master_cabang','master_cabang.id = user.cabang','left');	
 		return $this->db->count_all_results();
 	}
 	

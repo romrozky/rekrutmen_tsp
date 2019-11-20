@@ -1,0 +1,13 @@
+superadmin
+manajerpusat
+adminpusat
+userpusat
+manajersolo
+adminsolo
+usersolo
+manajerpati
+adminpati
+userpati
+
+default password
+112233
